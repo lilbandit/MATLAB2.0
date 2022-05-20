@@ -1,0 +1,50 @@
+format short
+clear all
+clc
+cost=[2 10 4 5;6 12 8 11;3 9 5 7];
+A=[12 25 20];
+B=[25 10 15 5];
+if sum(A)==sum(B)
+    fprintf('Given Trasportation is Balanced\n');
+else
+    fprintf('Given Trasportation is Unbalanced\n');
+    if sum(A)<sum(B)
+        cost(end+1,:)=zeros(1,size(A,2));
+        A(end+1)=sum(B)-sum(A);
+    elseif sum(A)>sum(B)
+        cost(:,end+1)=zeros(1,size(A,2));
+        B(end+1)=sum(A)-sum(B);
+    end
+end
+display(cost);
+Icost=cost;
+X=zeros(size(cost));
+[m,n]=size(cost);
+BFS=m+n-1;
+
+for i= 1:BFS
+    [p,q] = min(Icost);
+    [u,j] = min(p);
+    i = q(j);
+    x = min(A(i),B(j));
+    A(i)=A(i)-x;
+    B(j)=B(j)-x;
+    if A(i)==0
+        Icost(i,:) = inf;
+    else
+       Icost(:,j) = inf;
+    end
+    X(i,j)=x;
+end
+
+fprintf('Initial Bfs\n');
+IB=array2table(X);
+disp(IB);
+TotalBfs=length(nonzeros(X));
+if TotalBfs==BFS
+    fprintf('Solution is Non-Degenerate\n');
+else
+    fprintf('solution is Degenerate\n');
+end
+Initialcost=sum(sum(cost.*X));
+fprintf('Initial BFS cost = %d\n',Initialcost);
