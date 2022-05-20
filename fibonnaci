@@ -1,0 +1,45 @@
+clc
+clear 
+
+f = @(x) x*(x-2);
+L = 0;  %%lower limit
+R = 1.5; %%upper limit
+n =6; %%number of iterations
+
+%%Fibbonaci series
+fibo = ones(1,n);
+
+for  i=3:n+1
+    fibo(i)=fibo(i-1) + fibo(i-2);
+end
+
+%%iteration starts
+for k = 1:n
+    ratio = fibo(n+1-k)/fibo(n+2-k);
+    x2 = L + ratio * (R-L);
+    x1 = L+R -x2;   
+    fx1 = f(x1);
+    fx2 = f(x2);
+    %print the table
+    fiboTable(k,:) = [ratio L R x1 x2 fx1 fx2];
+    if fx1>fx2
+        L = x1;
+    elseif fx1<fx2
+            R = x2;
+    elseif fx1== fx2
+        if min(abs(L), abs(x1))==L
+            R = x2;
+        else
+            L = x1;
+        end
+    end
+end
+fibot = array2table(fiboTable);
+variables = {'ratio', 'L', 'R', 'x1', 'x2', 'fx1', 'fx2'};
+fibot.Properties.VariableNames(1:size(fiboTable,2)) = variables;
+fibot
+
+xopt = (L+R)/2;
+fopt = f(xopt);
+display(xopt);
+display(fopt);
